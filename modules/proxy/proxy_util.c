@@ -826,6 +826,12 @@ PROXY_DECLARE(int) ap_proxy_pre_http_request(conn_rec *c, request_rec *r)
     return OK;
 }
 
+PROXY_DECLARE(int) ap_proxy_pre_sip_request(conn_rec *c, request_rec *r)
+{
+    ap_add_input_filter("SIP_IN", NULL, r, c);
+    return OK;
+}
+
 PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
                               proxy_dir_conf *conf, const char *url)
 {

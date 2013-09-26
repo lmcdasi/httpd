@@ -48,6 +48,7 @@ SUBDIRS = \
 	database \
 	session \
 	slotmem \
+	osip \
 	$(EOLIST)
 
 # If WITH_LDAP and LDAPSDK have been defined then build the util_ldap module

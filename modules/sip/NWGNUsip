@@ -19,10 +19,6 @@ XINCDIRS	+= \
 			$(APR)/include \
 			$(APRUTIL)/include \
 			$(AP_WORK)/include \
-			$(AP_WORK)/modules/http \
-			$(AP_WORK)/modules/generators \
-			$(AP_WORK)/modules/ssl \
-			$(NWOS) \
 			$(EOLIST)
 
 #
@@ -94,19 +90,19 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME	= proxy
+NLM_NAME	= sip
 
 #
 # This is used by the link '-desc ' directive.
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	= Apache $(VERSION_STR) Proxy Module
+NLM_DESCRIPTION	= Apache $(VERSION_STR) SIP Module
 
 #
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	= Proxy Module
+NLM_THREAD_NAME	= SIP Module
 
 #
 # If this is specified, it will override VERSION value in
@@ -151,7 +147,7 @@ XDCDATA		=
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/proxy.nlm \
+	$(OBJDIR)/sip.nlm \
 	$(EOLIST)
 
 #
@@ -165,9 +161,7 @@ TARGET_lib = \
 # Paths must all use the '/' character
 #
 FILES_nlm_objs = \
-	$(OBJDIR)/mod_proxy.o \
-	$(OBJDIR)/proxy_util.o \
-	$(OBJDIR)/libprews.o \
+	$(OBJDIR)/mod_sip.o \
 	$(EOLIST)
 
 #
@@ -221,7 +215,7 @@ endif
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
-	@$(OBJDIR)/mod_proxy.imp \
+	sip_module \
 	$(EOLIST)
 
 #
@@ -237,7 +231,7 @@ FILES_lib_objs = \
 
 libs :: $(OBJDIR) $(TARGET_lib)
 
-nlms :: libs $(OBJDIR)/mod_proxy.imp $(TARGET_nlm)
+nlms :: libs $(OBJDIR)/mod_sip.imp $(TARGET_nlm)
 
 #
 # Updated this target to create necessary directories and copy files to the
@@ -251,11 +245,11 @@ install :: nlms FORCE
 
 vpath %.c ../arch/netware
 
-$(OBJDIR)/mod_proxy.imp:
+$(OBJDIR)/mod_sip.imp:
 	@echo $(DL)GEN  $@$(DL)
-	@echo $(DL)# Exports of mod_proxy$(DL)> $@
+	@echo $(DL)# Exports of mod_sip$(DL)> $@
 	@echo $(DL) (AP$(VERSION_MAJMIN))$(DL)>> $@
-	@echo $(DL) proxy_module,$(DL)>> $@
+	@echo $(DL) sip_module,$(DL)>> $@
 	@echo $(DL) proxy_hook_canon_handler,$(DL)>> $@
 	@echo $(DL) proxy_hook_get_canon_handler,$(DL)>> $@
 	@echo $(DL) proxy_hook_get_post_request,$(DL)>> $@
@@ -302,7 +296,6 @@ $(OBJDIR)/mod_proxy.imp:
 	@echo $(DL) ap_proxy_parse_wstatus,$(DL)>> $@
 	@echo $(DL) ap_proxy_post_request,$(DL)>> $@
 	@echo $(DL) ap_proxy_pre_http_request,$(DL)>> $@
-	@echo $(DL) ap_proxy_pre_sip_request,$(DL)>> $@
 	@echo $(DL) ap_proxy_pre_request,$(DL)>> $@
 	@echo $(DL) ap_proxy_release_connection,$(DL)>> $@
 	@echo $(DL) ap_proxy_set_wstatus,$(DL)>> $@

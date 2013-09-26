@@ -212,6 +212,31 @@ if test "x${cache_file}" = "x/dev/null"; then
   export CC; export CPP
 fi
 
+dnl OSIP
+AC_MSG_NOTICE([])
+AC_MSG_NOTICE([Configuring OSIP Runtime library...])
+AC_MSG_NOTICE([])
+
+AC_ARG_WITH(included-osip,
+APACHE_HELP_STRING(--with-included-osip,Use bundled copies of OSIP))
+
+if test "x$with_included_osip" = "xyes"; then
+  osip_found=yes
+  if test ! -d srclib/osip && test ! -d $srcdir/srclib/osip; then
+    AC_MSG_ERROR([Bundled OSIP requested but not found at ./srclib/. Download and unpack the corresponding osip packages to ./srclib/.])
+  else
+    AC_MSG_NOTICE([Using OSIP library])
+    APR_ADDTO(OSIP_INCLUDES, [-I\$(top_srcdir)/srclib/osip/include])
+    APR_ADDTO(OSIP_LIBS, [-L\$(top_srcdir)/srclib/osip/src/osip2/.libs -losip2 -L\$(top_srcdir)/srclib/osip/src/osipparser2/.libs -losipparser2])
+  fi
+fi
+
+APACHE_SUBST(OSIP_LIBS)
+
+if test "$osip_found" = "no"; then
+  AC_MSG_ERROR([OSIP not found.  Please read the documentation.])
+fi
+
 AC_ARG_WITH(pcre,
 APACHE_HELP_STRING(--with-pcre=PATH,Use external PCRE library))
 
@@ -262,6 +287,9 @@ APR_ADDTO(INCLUDES, $APU_INCLUDES)
 
 dnl Add in path to PCRE includes
 APR_ADDTO(INCLUDES, $PCRE_INCLUDES)
+
+dnl Add in path to OSIP includes
+APR_ADDTO(INCLUDES, $OSIP_INCLUDES)
 
 AC_MSG_NOTICE([])
 AC_MSG_NOTICE([Applying OS-specific hints for httpd...])

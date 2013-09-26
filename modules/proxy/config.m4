@@ -20,6 +20,7 @@ proxy_fcgi_objs="mod_proxy_fcgi.lo"
 proxy_scgi_objs="mod_proxy_scgi.lo"
 proxy_fdpass_objs="mod_proxy_fdpass.lo"
 proxy_ajp_objs="mod_proxy_ajp.lo ajp_header.lo ajp_link.lo ajp_msg.lo ajp_utils.lo"
+proxy_sip_objs="mod_proxy_sip.lo"
 proxy_balancer_objs="mod_proxy_balancer.lo"
 
 case "$host" in
@@ -33,6 +34,7 @@ case "$host" in
     proxy_scgi_objs="$proxy_scgi_objs mod_proxy.la"
     proxy_fdpass_objs="$proxy_fdpass_objs mod_proxy.la"
     proxy_ajp_objs="$proxy_ajp_objs mod_proxy.la"
+    proxy_sip_objs="$proxy_sip_objs mod_proxy.la"
     proxy_balancer_objs="$proxy_balancer_objs mod_proxy.la"
     ;;
 esac
@@ -56,6 +58,14 @@ APACHE_MODULE(proxy_ajp, Apache proxy AJP module.  Requires and is enabled by --
 APACHE_MODULE(proxy_balancer, Apache proxy BALANCER module.  Requires and is enabled by --enable-proxy., $proxy_balancer_objs, , $proxy_mods_enable,, proxy)
 
 APACHE_MODULE(proxy_express, mass reverse-proxy module. Requires --enable-proxy., , , $proxy_mods_enable,, proxy)
+
+APACHE_MODULE(proxy_sip, Apache proxy SIP module.  Requires and is enabled by --enable-proxy., $proxy_sip_objs, , $proxy_mods_enable, [
+   if  test "x$enable_proxy_sip" != "xmost" && test "x$enable_proxy_sip" != "x"; then
+      AC_MSG_NOTICE([SIP Proxy - using provided OSIP library])
+      APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current -I\$(top_srcdir)/srclib/osip/include])
+      APR_ADDTO(MOD_PROXY_SIP_LDADD, [-L\$(top_srcdir)/srclib/osip/src/osip2/.libs -losip2 -L\$(top_srcdir)/srclib/osip/src/osipparser2/.libs -losipparser2])
+   fi
+], proxy)
 
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 

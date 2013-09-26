@@ -626,7 +626,7 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
             }
         }
     }
-    else {
+    else if (! (r->parsed_uri.scheme != NULL && !strcmp(r->parsed_uri.scheme, "sip")) ){
         len = alias_match(r->uri, fake);
 
         if (len != 0) {
@@ -639,7 +639,11 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
             }
             found = apr_pstrcat(r->pool, "proxy:", real, use_uri + len, NULL);
         }
+    } else {
+        /* SIP */
+        found = apr_pstrcat(r->pool, "proxy:", real, use_uri + len, NULL);
     }
+
     if (mismatch) {
         /* We made a reducing transformation, so we can't safely use
          * unparsed_uri.  Safe fallback is to ignore nocanon.
@@ -679,9 +683,12 @@ static int proxy_trans(request_rec *r)
         return OK;
     }
 
-    if ((r->unparsed_uri[0] == '*' && r->unparsed_uri[1] == '\0')
-        || !r->uri || r->uri[0] != '/') {
-        return DECLINED;
+    /* Allow sip too */
+    if (!(r->parsed_uri.scheme != NULL && !strcmp(r->parsed_uri.scheme, "sip"))) {
+        if ((r->unparsed_uri[0] == '*' && r->unparsed_uri[1] == '\0')
+            || !r->uri || r->uri[0] != '/') {
+            return DECLINED;
+        }
     }
 
     /* XXX: since r->uri has been manipulated already we're not really
@@ -2542,6 +2549,8 @@ static void register_hooks(apr_pool_t *p)
 
     /* register optional functions within proxy_util.c */
     proxy_util_register_hooks(p);
+
+    ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL, "PROXY register_hooks executed");
 }
 
 AP_DECLARE_MODULE(proxy) =

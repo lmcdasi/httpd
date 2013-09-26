@@ -152,20 +152,7 @@ XDCDATA		=
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/proxy.nlm \
-	$(OBJDIR)/proxycon.nlm \
-	$(OBJDIR)/proxyftp.nlm \
-	$(OBJDIR)/proxyhtp.nlm \
-	$(OBJDIR)/proxybalancer.nlm \
-	$(OBJDIR)/proxyajp.nlm \
-	$(OBJDIR)/proxyfcgi.nlm \
-	$(OBJDIR)/proxyscgi.nlm \
-	$(OBJDIR)/proxyexpress.nlm \
-	$(OBJDIR)/proxysip.nlm \
-	$(OBJDIR)/proxylbm_busy.nlm \
-	$(OBJDIR)/proxylbm_hb.nlm \
-	$(OBJDIR)/proxylbm_req.nlm \
-	$(OBJDIR)/proxylbm_traf.nlm \
+	$(OBJDIR)/sip.nlm \
 	$(EOLIST)
 
 #
@@ -233,7 +220,7 @@ FILES_lib_objs = \
 # implement targets and dependancies (leave this section alone)
 #
 
-libs :: $(OBJDIR) $(TARGET_lib)
+libs :: $(OBJDIR) $(TARGET_lib) $(OSIP_LIBS)
 
 nlms :: libs $(TARGET_nlm)
 

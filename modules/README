@@ -62,3 +62,5 @@ test/
   of Apache.  You should not compile these into a production
   server.  
 
+sip/
+  This directory houses support for sip protocol
